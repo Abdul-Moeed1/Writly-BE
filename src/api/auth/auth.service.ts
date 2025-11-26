@@ -4,11 +4,13 @@ import { User } from './models/user.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { logInDTO } from './DTOs/logIn.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModal: Model<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async createUser(payload: createUserDTO) {
@@ -24,6 +26,8 @@ export class AuthService {
     if (user.password !== payload.password) {
       throw new BadRequestException('Invalid credentials');
     }
-    return user;
+    const jwtPayload = { email: user.email, name: user.name };
+
+    return { token: await this.jwtService.signAsync(jwtPayload) };
   }
 }
