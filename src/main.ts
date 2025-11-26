@@ -3,11 +3,13 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as cors from 'cors';
+import { MongooseExceptionFilter } from './filters/mongo.exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new MongooseExceptionFilter());
 
   const corsOptions = {
     origin: 'http://localhost:5173',
