@@ -11,14 +11,7 @@ export class AuthService {
   ) {}
 
   async createUser(payload: createUserDTO) {
-    const previousUser = await this.userModal.findOne({
-      email: payload.email,
-    });
-    if (previousUser) {
-      throw new BadRequestException('User already exists');
-    }
-
     const user = new this.userModal(payload);
-    return user.save();
+    return await user.save();
   }
 }
